@@ -1,8 +1,9 @@
 package io.faceless.speaker
 
-import android.Manifest
+import android.Manifest.permission.MODIFY_AUDIO_SETTINGS
+import android.Manifest.permission.RECORD_AUDIO
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.media.AudioDeviceInfo
 import android.media.AudioDeviceInfo.*
 import android.media.AudioManager
@@ -10,7 +11,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import io.faceless.speaker.audio.Repeater
 import kotlinx.coroutines.*
 
@@ -21,12 +22,12 @@ class MainActivity : AppCompatActivity() {
 
         val DEVICE_TYPES = setOf(TYPE_BLUETOOTH_A2DP, TYPE_WIRED_HEADPHONES, TYPE_BUILTIN_EARPIECE)
 
-        const val BUFFER_SIZE = 32
+        val REQUIRED_PERMISSIONS = arrayOf(RECORD_AUDIO, MODIFY_AUDIO_SETTINGS)
     }
 
-    private val mRepeater by lazy { Repeater(bufferSize = BUFFER_SIZE) }
+    private val mRepeater by lazy { Repeater.instance }
 
-    private val mAudioManager: AudioManager by lazy {
+    private val mAudioManager by lazy {
         getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
 
@@ -63,25 +64,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun audioDeviceInfo(): AudioDeviceInfo? {
         val devices = mAudioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-        val sorted = devices.filter { DEVICE_TYPES.contains(it.type) }
-            .sortedByDescending { it.type }
-        val deviceInfo = sorted.first()
-        return deviceInfo
+        return devices.filter { DEVICE_TYPES.contains(it.type) }
+            .maxBy { it.type }!!
     }
 
     private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.MODIFY_AUDIO_SETTINGS
-            ) != PackageManager.PERMISSION_GRANTED
+        if (checkSelfPermission(this, RECORD_AUDIO) != PERMISSION_GRANTED
+            || checkSelfPermission(this, MODIFY_AUDIO_SETTINGS) != PERMISSION_GRANTED
         ) {
-            val permissions =
-                arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS)
-            ActivityCompat.requestPermissions(this, permissions, 0)
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, 0)
         }
     }
 

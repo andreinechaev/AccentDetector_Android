@@ -10,7 +10,7 @@ import android.media.AudioRecord
 import android.media.AudioTrack
 import android.util.Log
 
-class Repeater(
+open class Repeater(
     val rate: Int = 22000, val encoding: Int = AudioFormat.ENCODING_DEFAULT,
     val chIn: Int = CHANNEL_IN_MONO, val chOut: Int = CHANNEL_OUT_MONO,
     val contentType: Int = CONTENT_TYPE_SPEECH, val usage: Int = USAGE_MEDIA,
@@ -79,5 +79,6 @@ class Repeater(
 
     companion object {
         val TAG = Repeater::class.java.canonicalName as String
+        val instance = Repeater()
     }
 }
