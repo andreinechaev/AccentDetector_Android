@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         mRecordBtn = findViewById(R.id.record_play_pause)
         mRecordBtn?.setOnClickListener {
 
-            start(15, audioDeviceInfo()!!.id)
+            start(15, 1)
         }
         // Example of a call to a native method
         sample_text.text = stringFromJNI()

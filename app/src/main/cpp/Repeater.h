@@ -5,7 +5,7 @@
 #ifndef SPEAKER_REPEATER_H
 #define SPEAKER_REPEATER_H
 
-#include <aaudio/AAudio.h>
+#include <oboe/Oboe.h>
 #include <atomic>
 
 class Repeater {
@@ -19,11 +19,6 @@ public:
     bool start(int32_t deviceIn, int32_t deviceOut);
 
     bool stop();
-
-private:
-    AAudioStream *in_;
-
-    AAudioStream *out_;
 };
 
 

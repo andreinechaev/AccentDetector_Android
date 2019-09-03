@@ -3,7 +3,7 @@
 #include <aaudio/AAudio.h>
 #include "Repeater.h"
 
-static Repeater *repeater = new Repeater();
+static Repeater repeater;
 
 extern "C" {
 
@@ -19,14 +19,14 @@ JNIEXPORT void JNICALL
 Java_io_faceless_speaker_MainActivity_start(JNIEnv *env, jobject, jint deviceIn,
                                                        jint deviceOut) {
 
-        repeater->start(deviceIn, deviceOut);
+        repeater.start(deviceIn, deviceOut);
 }
 
 JNIEXPORT void JNICALL
 Java_io_faceless_speaker_MainActivity_stop(JNIEnv *env, jobject, jint deviceIn,
                                             jint deviceOut) {
 
-    repeater->stop();
+    repeater.stop();
 }
 }
 
