@@ -37,6 +37,8 @@ public:
 
     bool stop();
 
+    void release();
+
 
 private:
     AudioStream* out_;

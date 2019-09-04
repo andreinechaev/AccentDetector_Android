@@ -6,13 +6,24 @@ import android.content.pm.PackageManager
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import io.faceless.speaker.audio.Repeater
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val mAudioManager by lazy {
+        getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    }
+
+    private val mRepeater by lazy {
+        val out = audioDeviceInfo()!!.id
+        Repeater(outputDevice = out)
+    }
 
     companion object {
         val TAG = MainActivity::class.java.canonicalName as String
@@ -36,9 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     var mRecordBtn: Button? = null
 
-    private val mAudioManager by lazy {
-        getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,11 +57,16 @@ class MainActivity : AppCompatActivity() {
 
         mRecordBtn = findViewById(R.id.record_play_pause)
         mRecordBtn?.setOnClickListener {
-
-            start(15, 1)
+            if (mRepeater.isRunning()) {
+                Log.d(TAG, "Stopping")
+                mRepeater.release()
+            } else {
+                Log.d(TAG, "Starting")
+                mRepeater.transmit()
+            }
         }
         // Example of a call to a native method
-        sample_text.text = stringFromJNI()
+        sample_text.text = "Welcome"
     }
 
     private fun checkPermissions() {
@@ -74,14 +88,4 @@ class MainActivity : AppCompatActivity() {
         return devices.filter { DEVICE_TYPES.contains(it.type) }
             .maxBy { it.type }!!
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
-
-    external fun start(deviceIn: Int, deviceOut: Int)
-
-    external fun stop()
 }

@@ -10,8 +10,7 @@ constexpr int32_t kRate = 22000;
 AudioEngine::AudioEngine(): in_(nullptr), out_(nullptr) {}
 
 AudioEngine::~AudioEngine() {
-    free(in_);
-    free(out_);
+    release();
 };
 
 AudioStream *AudioEngine::getOutputStream() const {
@@ -86,7 +85,39 @@ bool AudioEngine::stop() {
         return false;
     }
 
-    return false;
+    if (in_->requestStop() != Result::OK) {
+        __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Engine could not stop In stream");
+    }
+
+
+
+    auto inputState = StreamState::Stopping;
+    auto nextState = StreamState::Stopped;
+    int64_t timeoutNanos = 100 * kNanosPerMillisecond;
+    out_->requestStop();
+    auto result = out_->waitForStateChange(inputState, &nextState, timeoutNanos);
+    if (result !=  Result::OK) {
+        __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Engine could not stop Out stream");
+    }
+
+    if (out_->requestFlush() != Result::OK) {
+        __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Engine could not flush Out stream");
+    }
+
+    return true;
+}
+
+void AudioEngine::release() {
+    if (in_ != nullptr && in_->getState() != StreamState::Closed) {
+        in_->close();
+    }
+
+    if (out_ != nullptr && out_->getState() != StreamState::Closed) {
+        out_->close();
+    }
+
+    delete in_;
+    delete out_;
 }
 
 
