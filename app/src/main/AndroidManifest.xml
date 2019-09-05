@@ -3,7 +3,6 @@
     package="io.faceless.speaker">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <!--    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT"/>-->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <application
         android:allowBackup="true"
@@ -15,10 +14,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

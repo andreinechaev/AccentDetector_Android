@@ -45,6 +45,11 @@ open class Repeater(
 
     companion object {
         val TAG = Repeater::class.java.canonicalName as String
+
+        // Used to load the 'native-lib' library on application startup.
+        init {
+            System.loadLibrary("native-lib")
+        }
     }
 
     /**
