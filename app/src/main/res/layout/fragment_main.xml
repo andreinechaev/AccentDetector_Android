@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainFragment">
+
+    <Button
+        android:id="@+id/record_play_pause"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/record_button_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.500"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:id="@+id/twister_scroll_view"
+        android:layout_width="400dp"
+        android:layout_height="595dp"
+        app:layout_constraintBottom_toTopOf="@+id/prev_twister_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/twister_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/roboto_mono_light"
+                android:text="@string/sample_text"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/next_twister_btn"
+        android:layout_width="58dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:drawable/ic_media_next"
+        app:layout_constraintBottom_toTopOf="@+id/record_play_pause"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/prev_twister_btn"
+        android:layout_width="58dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:drawable/ic_media_previous"
+        app:layout_constraintBottom_toTopOf="@+id/record_play_pause"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
