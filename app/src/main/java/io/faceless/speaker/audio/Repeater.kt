@@ -14,7 +14,7 @@ open class Repeater(
 
 
     fun init() {
-        initEngine(rate)
+        initEngine(inputDevice, outputDevice)
     }
 
     fun transmit() {
@@ -23,7 +23,7 @@ open class Repeater(
             return
         }
         isRunning.set(true)
-        if (!start(inputDevice, outputDevice)) {
+        if (!start()) {
             Log.e(TAG, "Could not start Engine")
         } else {
             Log.d(TAG, "Engine Started")
@@ -34,7 +34,7 @@ open class Repeater(
         if (!stop()) {
             Log.e(TAG, "Could not stop Engine")
         } else {
-            Log.d(TAG, "Started Stopped")
+            Log.d(TAG, "Engine Stopped")
         }
         isRunning.set(false)
     }
@@ -56,9 +56,9 @@ open class Repeater(
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    private external fun initEngine(hz: Int = rate)
+    private external fun initEngine(deviceIn: Int, deviceOut: Int)
 
-    private external fun start(deviceIn: Int, deviceOut: Int): Boolean
+    private external fun start(): Boolean
 
     private external fun stop(): Boolean
 }

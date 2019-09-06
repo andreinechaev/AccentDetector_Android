@@ -2,14 +2,14 @@
 #include <string>
 #include <aaudio/AAudio.h>
 #include <android/log.h>
-#include "AudioEngine.h"
+#include "engine/AudioEngine.h"
 
 extern "C" {
 
-
 JNIEXPORT jboolean JNICALL
-Java_io_faceless_speaker_audio_Repeater_start(JNIEnv *env, jobject, jint deviceIn,
+Java_io_faceless_speaker_audio_Repeater_initEngine(JNIEnv *env, jobject, jint deviceIn,
                                               jint deviceOut) {
+
     auto& engine = AudioEngine::get();
     engine.release();
 
@@ -18,6 +18,12 @@ Java_io_faceless_speaker_audio_Repeater_start(JNIEnv *env, jobject, jint deviceI
         return static_cast<jboolean>(false);
     }
 
+    return static_cast<jboolean>(true);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_io_faceless_speaker_audio_Repeater_start(JNIEnv *env, jobject) {
+    auto& engine = AudioEngine::get();
     if (!engine.start()) {
         __android_log_print(ANDROID_LOG_ERROR, "Native Lib", "Could not start AudioEngine");
         return static_cast<jboolean>(false);

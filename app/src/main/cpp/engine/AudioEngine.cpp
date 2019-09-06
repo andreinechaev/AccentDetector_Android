@@ -29,7 +29,7 @@ bool AudioEngine::init(int32_t deviceInId, int32_t deviceOutId) {
             ->setFormat(AudioFormat::I16)
             ->setChannelCount(ChannelCount::Mono)
             ->setDeviceId(deviceOutId)
-            ->setSharingMode(SharingMode::Exclusive)
+            ->setSharingMode(SharingMode::Shared)
             ->setContentType(ContentType::Speech)
             ->setSampleRate(kRate)
             ->setDirection(Direction::Output)

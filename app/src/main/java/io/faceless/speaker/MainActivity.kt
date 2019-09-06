@@ -28,6 +28,5 @@ class MainActivity : AppCompatActivity(), NavHost, MainFragment.OnFragmentIntera
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
     }
 }

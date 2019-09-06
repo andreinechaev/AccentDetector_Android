@@ -5,7 +5,7 @@
 #include <android/log.h>
 #include <thread>
 #include "RepeaterAudioCallback.h"
-#include "AudioEngine.h"
+#include "engine/AudioEngine.h"
 
 oboe::DataCallbackResult
 RepeaterAudioCallback::onAudioReady(oboe::AudioStream *audioStream, void *audioData,
@@ -16,6 +16,7 @@ RepeaterAudioCallback::onAudioReady(oboe::AudioStream *audioStream, void *audioD
     if (result != oboe::Result::OK) {
         __android_log_print(ANDROID_LOG_ERROR, "RepeaterAudioCallback",
                             "Error writing to output stream");
+        return oboe::DataCallbackResult::Stop;
     }
 
     return oboe::DataCallbackResult::Continue;

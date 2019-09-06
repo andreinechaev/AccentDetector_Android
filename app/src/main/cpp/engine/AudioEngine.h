@@ -6,7 +6,7 @@
 #define SPEAKER_AUDIOENGINE_H
 
 #include <oboe/Oboe.h>
-#include "RepeaterAudioCallback.h"
+#include "../RepeaterAudioCallback.h"
 
 using namespace oboe;
 

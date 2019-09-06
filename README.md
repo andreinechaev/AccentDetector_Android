@@ -12,7 +12,7 @@ The application is initial step towards Accent detector
     
 2. Embed tongue twisters
 	- [x] UI for selecting twisters
-	- [ ]UI font and background selection (Themes)
+	- [ ] UI font and background selection (Themes)
 	
 3. Draw FFT in real time
    - [ ] Calculate FFT without affecting audio transmitter (multithreading)
