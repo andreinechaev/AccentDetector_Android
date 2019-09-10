@@ -6,11 +6,11 @@
 #define SPEAKER_AUDIOENGINE_H
 
 #include <oboe/Oboe.h>
-#include "../RepeaterAudioCallback.h"
+#include "../collections/Queue.h"
 
 using namespace oboe;
 
-class AudioEngine {
+class AudioEngine: public AudioStreamCallback {
 public:
     static AudioEngine &get() {
         static AudioEngine instance;
@@ -39,12 +39,18 @@ public:
 
     void release();
 
+    oboe::DataCallbackResult
+    onAudioReady(oboe::AudioStream *, void *audioData, int32_t numFrames);
+
+    void onErrorBeforeClose(oboe::AudioStream *, oboe::Result error);
+
+    void onErrorAfterClose(oboe::AudioStream *, oboe::Result error);
+
 
 private:
     AudioStream* out_;
     AudioStream* in_;
-    std::unique_ptr<RepeaterAudioCallback> callback_;
-
+    Queue<int32_t> queue_;
 };
 
 

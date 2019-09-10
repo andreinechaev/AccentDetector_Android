@@ -3,29 +3,22 @@
 //
 
 #include <android/log.h>
+#include <thread>
 #include "AudioEngine.h"
 
 constexpr int32_t kRate = 22000;
 
-AudioEngine::AudioEngine(): in_(nullptr), out_(nullptr) {}
+AudioEngine::AudioEngine(): in_(nullptr), out_(nullptr) {
+}
 
 AudioEngine::~AudioEngine() {
     release();
 };
 
-AudioStream *AudioEngine::getOutputStream() const {
-    return out_;
-}
-
-AudioStream *AudioEngine::getInputStream() const {
-    return in_;
-}
-
 bool AudioEngine::init(int32_t deviceInId, int32_t deviceOutId) {
-    callback_ = std::make_unique<RepeaterAudioCallback>();
-
     AudioStreamBuilder builder;
     auto resultOut = builder.setPerformanceMode(PerformanceMode::LowLatency)
+            ->setBufferCapacityInFrames(256)
             ->setFormat(AudioFormat::I16)
             ->setChannelCount(ChannelCount::Mono)
             ->setDeviceId(deviceOutId)
@@ -44,7 +37,7 @@ bool AudioEngine::init(int32_t deviceInId, int32_t deviceOutId) {
 
     auto resultIn = builder.setDirection(Direction::Input)
             ->setDeviceId(deviceInId)
-            ->setCallback(callback_.get())
+            ->setCallback(this)
             ->openStream(&in_);
 
     if (resultIn != Result::OK) {
@@ -98,10 +91,12 @@ bool AudioEngine::stop() {
     auto result = out_->waitForStateChange(inputState, &nextState, timeoutNanos);
     if (result !=  Result::OK) {
         __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Engine could not stop Out stream");
+        return false;
     }
 
     if (out_->requestFlush() != Result::OK) {
         __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Engine could not flush Out stream");
+        return false;
     }
 
     return true;
@@ -118,6 +113,49 @@ void AudioEngine::release() {
 
     delete in_;
     delete out_;
+}
+
+DataCallbackResult
+AudioEngine::onAudioReady(AudioStream *, void *audioData,
+                                    int32_t numFrames) {
+    auto result = out_->write(audioData, numFrames, 0);
+    auto data = static_cast<int32_t* >(audioData);
+    std::thread t([&] {
+
+        for (int i = 0; i < numFrames; ++i) {
+            auto v = data[i];
+            queue_.push(v);
+        }
+        __android_log_print(ANDROID_LOG_ERROR, "AudioEngine",
+                            "Write: size: %d with frames: %d", queue_.size(), numFrames);
+    });
+    t.detach();
+    if (result != Result::OK) {
+        __android_log_print(ANDROID_LOG_ERROR, "AudioEngine",
+                            "Error writing to output stream");
+        return DataCallbackResult::Stop;
+    }
+
+    return DataCallbackResult::Continue;
+}
+
+void AudioEngine::onErrorBeforeClose(AudioStream *, Result error) {
+    __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Error on before close %s",
+                        convertToText(error));
+}
+
+void AudioEngine::onErrorAfterClose(AudioStream *, Result error) {
+    __android_log_print(ANDROID_LOG_ERROR, "AudioEngine", "Error on after close %s",
+                        convertToText(error));
+}
+
+
+AudioStream *AudioEngine::getOutputStream() const {
+    return out_;
+}
+
+AudioStream *AudioEngine::getInputStream() const {
+    return in_;
 }
 
 
