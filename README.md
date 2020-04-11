@@ -2,6 +2,23 @@
 
 The application is initial step towards Accent detector
 
+## Build
+
+The project relies on Oboe library
+
+### Mac
+
+make sure that you have `$OBOE_PATH` set as environment variable
+
+### Linux
+
+For some reasons the env var `$OBOE_PATH` is not detected by CMake 
+To build the project you need to set it explicitly in `CMakeLists.txt`
+
+### Windows
+
+Not tried
+
 ## Road map
 
 1. Read & Write audio simultaneously from/to mic and speaker
@@ -32,4 +49,4 @@ The application is initial step towards Accent detector
 
     
 ## Mockup
-![](misc/img/Speaker App.png)
+![](https://github.com/andreinechaev/AccentDetector_Android/blob/master/misc/img/Speaker%20App.png)

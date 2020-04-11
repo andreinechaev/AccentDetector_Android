@@ -6,7 +6,12 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 # OBOE lib
-set (OBOE_DIR $ENV{OBOE_PATH})
+if ("$ENV{OBOE_PATH}" STREQUAL "")
+    set(OBOE_DIR "/home/$ENV{USERNAME}/Developer/Android/oboe")
+else()
+    set (OBOE_DIR $ENV{OBOE_PATH})
+endif()
+
 
 add_subdirectory (${OBOE_DIR} ./oboe)
 
